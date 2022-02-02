@@ -1,4 +1,9 @@
 <template>
+  <p>First player will be O and Second will be X.</p>
+  <div class="turn" v-if="!result">
+    <div v-if="current == 'O'">O's turn</div>
+    <div v-if="current == 'X'">X's turn</div>
+  </div>
   <div class="grid-container">
     <div class="grid-item" @click="execute('one')" id="one"></div>
     <div class="grid-item" @click="execute('two')" id="two"></div>
@@ -10,7 +15,10 @@
     <div class="grid-item" @click="execute('eight')" id="eight"></div>
     <div class="grid-item" @click="execute('nine')" id="nine"></div>
   </div>
-  <div>{{}}</div>
+  <div v-if="result">
+    <p>Game over</p>
+    <p>{{ result }}</p>
+  </div>
 </template>
 
 <script>
@@ -26,30 +34,53 @@ export default {
     let seven = "seven";
     let eight = "eight";
     let nine = "nine";
-
-    let current = "O";
+    let result = ref(null);
+    let current = ref("O");
+    let playGame = true;
     let execute = (block) => {
-      let value = document.querySelector(`#${block}`);
-      block == "one" ? (one = current) : null;
-      block == "two" ? (two = current) : null;
-      block == "three" ? (three = current) : null;
-      block == "four" ? (four = current) : null;
-      block == "five" ? (five = current) : null;
-      block == "six" ? (six = current) : null;
-      block == "seven" ? (seven = current) : null;
-      block == "eight" ? (eight = current) : null;
-      block == "nine" ? (nine = current) : null;
-      value.textContent = current;
+      if (playGame) {
+        let value = document.querySelector(`#${block}`);
+        block == "one" && one !== "O" && one !== "X"
+          ? (one = current.value)
+          : null;
+        block == "two" ? (two = current.value) : null;
+        block == "three" ? (three = current.value) : null;
+        block == "four" ? (four = current.value) : null;
+        block == "five" ? (five = current.value) : null;
+        block == "six" ? (six = current.value) : null;
+        block == "seven" ? (seven = current.value) : null;
+        block == "eight" ? (eight = current.value) : null;
+        block == "nine" ? (nine = current.value) : null;
+        value.textContent = current.value;
 
-      if (one == two && one == three) console.log(`${current} win.`);
-      if (one == four && one == seven) console.log(`${current} win.`);
-      if (one == five && one == nine) console.log(`${current} win.`);
-      if (four == five && four == six) console.log(`${current} win.`);
-      if (two == five && two == eight) console.log(`${current} win.`);
-      if (three == five && three == seven) console.log(`${current} win.`);
-      current == "O" ? (current = "X") : (current = "O");
+        if (one == two && one == three) {
+          result.value = `Winner - ${current.value}`;
+          playGame = false;
+        }
+        if (one == four && one == seven) {
+          result.value = `Winner - ${current.value}`;
+          playGame = false;
+        }
+        if (one == five && one == nine) {
+          result.value = `Winner - ${current.value}`;
+          playGame = false;
+        }
+        if (four == five && four == six) {
+          result.value = `Winner - ${current.value}`;
+          playGame = false;
+        }
+        if (two == five && two == eight) {
+          result.value = `Winner - ${current.value}`;
+          playGame = false;
+        }
+        if (three == five && three == seven) {
+          result.value = `Winner - ${current.value}`;
+          playGame = false;
+        }
+        current.value == "O" ? (current.value = "X") : (current.value = "O");
+      }
     };
-    return { execute };
+    return { execute, result, current };
   },
 };
 </script>
@@ -58,7 +89,7 @@ export default {
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
-  padding: 10px;
+  /* padding: 8px; */
   margin: 20px auto;
   width: 500px;
   height: 400px;
@@ -72,5 +103,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+p {
+  margin: 30px auto;
+  font-size: 20px;
+  font-weight: bolder;
+}
+.turn {
+  width: 600px;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 16px;
+  font-weight: bolder;
 }
 </style>
